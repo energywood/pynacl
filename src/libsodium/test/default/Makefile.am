@@ -4,7 +4,9 @@ EXTRA_DIST = \
 	wintest.bat \
 	pre.js.inc \
 	aead_aes256gcm.exp \
+	aead_aes256gcm2.exp \
 	aead_chacha20poly1305.exp \
+	aead_chacha20poly13052.exp \
 	aead_xchacha20poly1305.exp \
 	auth.exp \
 	auth2.exp \
@@ -55,6 +57,7 @@ EXTRA_DIST = \
 	scalarmult5.exp \
 	scalarmult6.exp \
 	scalarmult7.exp \
+	scalarmult8.exp \
 	secretbox.exp \
 	secretbox2.exp \
 	secretbox7.exp \
@@ -75,11 +78,14 @@ EXTRA_DIST = \
 	stream3.exp \
 	stream4.exp \
 	verify1.exp \
+	vrf.exp \
 	xchacha20.exp
 
 DISTCLEANFILES = \
 	aead_aes256gcm.res \
+	aead_aes256gcm2.res \
 	aead_chacha20poly1305.res \
+	aead_chacha20poly13052.res \
 	aead_xchacha20poly1305.res \
 	auth.res \
 	auth2.res \
@@ -130,6 +136,7 @@ DISTCLEANFILES = \
 	scalarmult5.res \
 	scalarmult6.res \
 	scalarmult7.res \
+	scalarmult8.res \
 	secretbox.res \
 	secretbox2.res \
 	secretbox7.res \
@@ -150,12 +157,15 @@ DISTCLEANFILES = \
 	stream3.res \
 	stream4.res \
 	verify1.res \
+	vrf.res \
 	xchacha20.res
 
 if NATIVECLIENT
 CLEANFILES = \
 	aead_aes256gcm.final \
+	aead_aes256gcm2.final \
 	aead_chacha20poly1305.final \
+	aead_chacha20poly13052.final \
 	aead_xchacha20poly1305.final \
 	auth.final \
 	auth2.final \
@@ -206,6 +216,7 @@ CLEANFILES = \
 	scalarmult5.final \
 	scalarmult6.final \
 	scalarmult7.final \
+	scalarmult8.final \
 	secretbox.final \
 	secretbox2.final \
 	secretbox7.final \
@@ -226,7 +237,9 @@ CLEANFILES = \
 	verify1.final \
 	xchacha20.final \
 	aead_aes256gcm.nexe \
+	aead_aes256gcm2.nexe \
 	aead_chacha20poly1305.nexe \
+	aead_chacha20poly13052.nexe \
 	aead_xchacha20poly1305.nexe \
 	auth.nexe \
 	auth2.nexe \
@@ -277,6 +290,7 @@ CLEANFILES = \
 	scalarmult5.nexe \
 	scalarmult6.nexe \
 	scalarmult7.nexe \
+	scalarmult8.nexe \
 	secretbox.nexe \
 	secretbox2.nexe \
 	secretbox7.nexe \
@@ -310,7 +324,9 @@ AM_LDFLAGS = @TEST_LDFLAGS@
 
 TESTS_TARGETS = \
 	aead_aes256gcm \
+	aead_aes256gcm2 \
 	aead_chacha20poly1305 \
+	aead_chacha20poly13052 \
 	aead_xchacha20poly1305 \
 	auth \
 	auth2 \
@@ -356,6 +372,7 @@ TESTS_TARGETS = \
 	scalarmult5 \
 	scalarmult6 \
 	scalarmult7 \
+	scalarmult8 \
 	secretbox \
 	secretbox2 \
 	secretbox7 \
@@ -372,7 +389,8 @@ TESTS_TARGETS = \
 	stream2 \
 	stream3 \
 	stream4 \
-	verify1
+	verify1 \
+	vrf
 
 if !EMSCRIPTEN
 if !NATIVECLIENT
@@ -392,8 +410,14 @@ TESTS_LDADD = \
 aead_aes256gcm_SOURCE                 = cmptest.h aead_aes256gcm.c
 aead_aes256gcm_LDADD                  = $(TESTS_LDADD)
 
+aead_aes256gcm2_SOURCE                = cmptest.h aead_aes256gcm2.c
+aead_aes256gcm2_LDADD                 = $(TESTS_LDADD)
+
 aead_chacha20poly1305_SOURCE          = cmptest.h aead_chacha20poly1305.c
 aead_chacha20poly1305_LDADD           = $(TESTS_LDADD)
+
+aead_chacha20poly13052_SOURCE         = cmptest.h aead_chacha20poly13052.c
+aead_chacha20poly13052_LDADD          = $(TESTS_LDADD)
 
 aead_xchacha20poly1305_SOURCE         = cmptest.h aead_xchacha20poly1305.c
 aead_xchacha20poly1305_LDADD          = $(TESTS_LDADD)
@@ -542,6 +566,9 @@ scalarmult6_LDADD         = $(TESTS_LDADD)
 scalarmult7_SOURCE        = cmptest.h scalarmult7.c
 scalarmult7_LDADD         = $(TESTS_LDADD)
 
+scalarmult8_SOURCE        = cmptest.h scalarmult8.c
+scalarmult8_LDADD         = $(TESTS_LDADD)
+
 secretbox_SOURCE          = cmptest.h secretbox.c
 secretbox_LDADD           = $(TESTS_LDADD)
 
@@ -601,6 +628,9 @@ stream4_LDADD             = $(TESTS_LDADD)
 
 verify1_SOURCE            = cmptest.h verify1.c
 verify1_LDADD             = $(TESTS_LDADD)
+
+vrf_SOURCE                = cmptest.h vrf.c
+vrf_LDADD                 = $(TESTS_LDADD)
 
 xchacha20_SOURCE          = cmptest.h xchacha20.c
 xchacha20_LDADD           = $(TESTS_LDADD)

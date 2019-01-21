@@ -144,13 +144,13 @@ class build_clib(_build_clib):
         # Ensure all of our executanle files have their permission set
         for filename in [
                 "src/libsodium/autogen.sh",
-                "src/libsodium/compile",
-                "src/libsodium/config.guess",
-                "src/libsodium/config.sub",
+                # "src/libsodium/compile",
+                # "src/libsodium/config.guess",
+                # "src/libsodium/config.sub",
                 "src/libsodium/configure",
-                "src/libsodium/depcomp",
-                "src/libsodium/install-sh",
-                "src/libsodium/missing",
+                # "src/libsodium/depcomp",
+                # "src/libsodium/install-sh",
+                # "src/libsodium/missing",
                 "src/libsodium/msvc-scripts/process.bat",
                 "src/libsodium/test/default/wintest.bat"]:
             os.chmod(here(filename), 0o755)

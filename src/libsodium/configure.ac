@@ -61,7 +61,7 @@ AC_ARG_ENABLE(ssp,
 ])
 
 AC_ARG_ENABLE(asm,
-[AS_HELP_STRING(--disable-asm,Do not compile assembly code -- This disables all (including non-assembly) platform-specific optimizations on Unix systems)],
+[AS_HELP_STRING(--disable-asm,[Do not compile assembly code -- As a side effect, this disables CPU-specific implementations on non-Windows platforms. Only for use with targets such as WebAssembly and NativeClient.])],
 [
   AS_IF([test "x$enableval" = "xno"], [
     enable_asm="no"
@@ -199,6 +199,12 @@ AC_CHECK_DEFINE([_FORTIFY_SOURCE], [], [
     [CPPFLAGS="$CPPFLAGS -D_FORTIFY_SOURCE=2"])
 ])
 
+AX_CHECK_COMPILE_FLAG([-mindirect-branch=thunk],
+  [CFLAGS="$CFLAGS -mindirect-branch=thunk"],
+  [
+    AX_CHECK_COMPILE_FLAG([-mretpoline], [CFLAGS="$CFLAGS -mretpoline"])
+  ])
+
 AX_CHECK_COMPILE_FLAG([-fvisibility=hidden],
   [CFLAGS="$CFLAGS -fvisibility=hidden"])
 
@@ -264,7 +270,7 @@ AS_CASE([$host_os],
 AS_IF([test "x$enable_ssp" != "xno"],[
 
 AS_CASE([$host_os],
-  [cygwin*|mingw*|msys|pw32*|cegcc*], [ ],
+  [cygwin*|mingw*|msys|pw32*|cegcc*|haiku], [ ],
   [*], [
     AX_CHECK_COMPILE_FLAG([-fstack-protector], [
       AX_CHECK_LINK_FLAG([-fstack-protector],
@@ -580,6 +586,18 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
    CPPFLAGS="$CPPFLAGS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS"
 ])
 
+AC_MSG_CHECKING(whether we can use inline asm code)
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+]], [[
+int a = 42;
+int *pnt = &a;
+__asm__ __volatile__ ("" : : "r"(pnt) : "memory");
+]])],
+  [AC_MSG_RESULT(yes)
+   AC_DEFINE([HAVE_INLINE_ASM], [1], [inline asm code can be used])]
+  [AC_MSG_RESULT(no)]
+)
+
 HAVE_AMD64_ASM_V=0
 AS_IF([test "$enable_asm" != "no"],[
   AC_MSG_CHECKING(whether we can use x86_64 asm code)
@@ -635,18 +653,17 @@ AC_SUBST(HAVE_AVX_ASM_V)
 AC_MSG_CHECKING(for 128-bit arithmetic)
 HAVE_TI_MODE_V=0
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#if !defined(__GNUC__) && !defined(__SIZEOF_INT128__)
+#if !defined(__clang__) && !defined(__GNUC__) && !defined(__SIZEOF_INT128__)
 # error mode(TI) is a gcc extension, and __int128 is not available
 #endif
-#if defined(__clang__) && !defined(__x86_64__)
+#if defined(__clang__) && !defined(__x86_64__) && !defined(__aarch64__)
 # error clang does not properly handle the 128-bit type on 32-bit systems
 #endif
 #ifndef NATIVE_LITTLE_ENDIAN
 # error libsodium currently expects a little endian CPU for the 128-bit type
 #endif
 #ifdef __EMSCRIPTEN__
-# error emscripten currently supports only shift operations on integers \
-#       larger than 64 bits
+# error emscripten currently doesn't support some operations on integers larger than 64 bits
 #endif
 #include <stddef.h>
 #include <stdint.h>
@@ -657,6 +674,8 @@ typedef unsigned uint128_t __attribute__((mode(TI)));
 #endif
 void fcontract(uint128_t *t) {
   *t += 0x8000000000000 - 1;
+  *t *= *t;
+  *t >>= 84;
 }
 ]], [[
 (void) fcontract;
@@ -772,7 +791,7 @@ dnl Checks for functions and headers
 AC_FUNC_ALLOCA
 AS_IF([test "x$EMSCRIPTEN" = "x"],[
   AC_CHECK_FUNCS([arc4random arc4random_buf])
-  AC_CHECK_FUNCS([mmap mlock madvise mprotect memset_s explicit_bzero nanosleep])
+  AC_CHECK_FUNCS([mmap mlock madvise mprotect memset_s explicit_bzero explicit_memset nanosleep])
 ])
 AC_CHECK_FUNCS([posix_memalign getpid])
 
