@@ -171,6 +171,12 @@ from nacl.bindings.crypto_sign import (
     crypto_sign_ed25519ph_update, crypto_sign_keypair, crypto_sign_open,
     crypto_sign_seed_keypair,
 )
+from nacl.bindings.crypto_vrf import (
+    crypto_vrf_PUBLICKEYBYTES, crypto_vrf_SECRETKEYBYTES,
+    crypto_vrf_SEEDBYTES, crypto_vrf_PROOFBYTES, crypto_vrf_OUTPUTBYTES,
+    crypto_vrf_keypair, crypto_vrf_keypair_from_seed, crypto_vrf_is_valid_key,
+    crypto_vrf_prove, crypto_vrf_verify
+)
 from nacl.bindings.randombytes import randombytes
 from nacl.bindings.sodium_core import sodium_init
 from nacl.bindings.utils import (
@@ -302,6 +308,18 @@ __all__ = [
     "crypto_sign_ed25519ph_final_verify",
     "crypto_sign_ed25519ph_state",
     "crypto_sign_ed25519ph_update",
+
+    "crypto_vrf_PUBLICKEYBYTES",
+    "crypto_vrf_SECRETKEYBYTES",
+    "crypto_vrf_SEEDBYTES",
+    "crypto_vrf_PROOFBYTES",
+    "crypto_vrf_OUTPUTBYTES",
+    "crypto_vrf_keypair",
+    "crypto_vrf_keypair_from_seed",
+    "crypto_vrf_is_valid_key",
+    "crypto_vrf_prove",
+    "crypto_vrf_verify",
+
 
     "crypto_pwhash_ALG_ARGON2I13",
     "crypto_pwhash_ALG_ARGON2ID13",
